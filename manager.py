@@ -5,7 +5,6 @@ from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 import pandas as pd
 import datetime
-import pymongo
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 from pymongo.mongo_client import MongoClient
