@@ -11,7 +11,7 @@ def main():
 
     # * get date data for yesterday and today
     today = datetime.datetime.now()
-    yesterday = today - datetime.timedelta(days = 2)
+    yesterday = today - datetime.timedelta(days = 1)
     yesterday, today = yesterday.strftime("%Y-%m-%d"), today.strftime("%Y-%m-%d")
 
     # * get news data from database

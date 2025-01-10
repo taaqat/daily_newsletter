@@ -327,6 +327,7 @@ prompt = """
    前面也不需要回傳 'here's the HTML format newsletter ....' 這段，只要 html 就好！
 2. 若新聞 input 不夠多，則不用每個主題都寫。
 3. 若新聞真的極度缺乏（ex: 只有兩三篇新聞輸入），請回傳字串 None，「不要有其他回應」。
+4. 所有文字都要是黑色的字。
 
 [OUTPUT]:
 
