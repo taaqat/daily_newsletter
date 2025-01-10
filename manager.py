@@ -7,7 +7,6 @@ import pandas as pd
 import datetime
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
-from pymongo.mongo_client import MongoClient
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
