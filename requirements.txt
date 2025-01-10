@@ -1,0 +1,9 @@
+requests
+streamlit
+urllib3
+pandas
+langchain-anthropic
+langchain-core
+langchain
+st-gsheets-connection
+python-dotenv
