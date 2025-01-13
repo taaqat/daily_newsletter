@@ -10,13 +10,12 @@ import re
 def main():
 
     # * get date data for yesterday and today
-    today = datetime.datetime.now()
+    today = datetime.datetime.now() - datetime.timedelta(days = 1)
     yesterday = today - datetime.timedelta(days = 1)
     yesterday, today = yesterday.strftime("%Y-%m-%d"), today.strftime("%Y-%m-%d")
 
     # * get news data from database
-    # raw_news = DataManager.fetch(yesterday, today)
-    raw_news = DataManager.fetch(yesterday, today) # todo 記得改回 today, tomorrow
+    raw_news = DataManager.fetch(yesterday, today) 
 
     if len(raw_news) < 20:
         raise ValueError("Returned news is not enough!")     # todo: send notification mail to admin
