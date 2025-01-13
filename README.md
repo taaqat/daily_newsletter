@@ -2,12 +2,14 @@
 
 In order to exploit the daily-scraped news and article data more efficiently, we construct a daily nes digest sender which summarizes the news daily and send the digest to all subscribers at 9:30 am GMT +8.
 
+```
 /taaqat/daily_newsletter
 ├── README.md
 ├── app.py
 ├── manager.py
 ├── requirements.txt
 └── test.py
+```
 
 ### `app.py`
 This file is the main python script where the codes of generating summary, updating to google sheet database, and sending emails are intergrated.
