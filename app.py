@@ -12,7 +12,9 @@ def main():
     # * get date data for yesterday and today
     today = datetime.datetime.now() - datetime.timedelta(days = 1)
     yesterday = today - datetime.timedelta(days = 1)
-    yesterday, today = yesterday.strftime("%Y-%m-%d"), today.strftime("%Y-%m-%d")
+    previous_day = yesterday - datetime.timedelta(days = 1)
+    previous_day, yesterday, today = previous_day.strftime("%Y-%m-%d"), yesterday.strftime("%Y-%m-%d"), today.strftime("%Y-%m-%d")
+    
 
     # * get news data from database
     raw_news = DataManager.fetch(yesterday, today) 
@@ -22,8 +24,11 @@ def main():
     
     # * summarize and generate newsletter by LLM
     in_message = DataManager.return_daily_raw_str(yesterday, raw_news)
-    response = LlmManager.llm_api_call(LlmManager.create_prompt_chain(prompt), in_message)
-    pattern = r"<!doctype html>.*?</html>"
+    sys_prompt = prompt(DataManager.get_from_gsheet(previous_day).tolist()[0])
+    print(sys_prompt)
+    response = LlmManager.llm_api_call(LlmManager.create_prompt_chain(sys_prompt), in_message)
+    print(response)
+    pattern = r"<!DOCTYPE html>.*?</html>"
     match = re.search(pattern, response, re.DOTALL)
 
     if match:
@@ -39,9 +44,13 @@ def main():
 
     user_data = DataManager.get_user_data()
     for _, row in user_data.iterrows():
-        DataManager.send_email(receiver_email = row['useremail'],
-                               content = html_content,
-                               status = 'succeeded')
+        try:
+            DataManager.send_email(receiver_email = row['useremail'],
+                                content = html_content,
+                                status = 'succeeded',
+                                date = yesterday)
+        except:
+            pass
         
 
 # * 主程式：
@@ -55,5 +64,6 @@ Some error happened:
 <br>
 {str(e)}
 """,
-        status = "failed"
+        status = "failed",
+        date = (datetime.datetime.now() - datetime.timedelta(days = 2)).strftime("%Y-%m-%d")
     )

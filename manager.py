@@ -122,12 +122,12 @@ class DataManager:
         return content
 
     @staticmethod
-    def send_email(receiver_email, content, status):
+    def send_email(receiver_email, content, status, date):
 
         sender_email = "taaqat93@gmail.com"
         status_mapping = {
-            "succeeded": "【III】 Today's Daily Newsletter!",
-            "failed": "【III】Daily Newsletter Failed to Generate"
+            "succeeded": f"【III】 Daily Newsletter {date}!",
+            "failed": f"【III】{date}Daily Newsletter Failed to Generate"
         }
 
         # * Create email object *
@@ -220,7 +220,7 @@ class DataManager:
             print(e)
             raise ValueError("No such file in the database!")
 
-    # --- Update the generated content to database in google sheet
+    # --- Update the generated content to google sheet
     def update_gsheet(
         date, content
     ):
@@ -233,11 +233,24 @@ class DataManager:
         }])
 
         conn.update(worksheet = 'contents', data = pd.concat([df, df_to_append], ignore_index = True))
+    
+    # --- Get the generated content of designated date from google sheet
+    def get_from_gsheet(
+        date
+    ):
+        conn = st.connection("newsletter_db", type = GSheetsConnection)
+        df = conn.read(worksheet = 'contents', ttl = 0)
 
-    # --- Update the generated content to database in google sheet
+        content = df[df['date'] == date]['content']
+        return content
+
+        
+
+    # --- Fetch the user data (user name & email)
     def get_user_data():
         conn = st.connection("newsletter_db", type = GSheetsConnection)
         df = conn.read(worksheet = 'users', ttl = 0)
+        df = df.drop(df[df["switch"] == False].index)
         return df
 
 class LlmManager:
@@ -317,10 +330,20 @@ class LlmManager:
 
         return chain
     
-prompt = """
+prompt = lambda previous_day: f"""
 你是一個優秀的電子報的撰文者，整理每日的新聞並統整成電子報的形式。
-我會輸入一批當日的新聞資料，需要請你從這些新聞事件中幫我從 STEEP +B 六個主題（社會、科技、經濟、環境、政治、投資）中各找出 2 個最有代表性的事件。
-之後，請重新命名你選出來的新聞標題，並且用 150 字簡單摘要該篇新聞。
+我會輸入一批當日的新聞資料，請你幫我用這批新聞統整出一份電子報，內容如下：
+- 第一段：今日代表漢字和釋義
+    - 請用一個漢字總結今天發生的事情，該漢字要能貫穿大部分的新聞事件。請回傳繁體中文漢字。
+    - 除了漢字，也用一個短句幫我解釋一下為什麼那個漢字能夠代表當日發生的事件。
+- 第二段：重點新聞
+    - 從 STEEP +B 六個主題（社會、科技、經濟、環境、政治、投資）中，幫我找出 2 個最有代表性的事件，重新命名你選出來的新聞標題，並且用 150 字摘要該篇新聞。
+    - 針對每則你摘出來的新聞，也幫我撰寫為什麼你認為該則新聞具有代表性，用 1~3 句話簡單闡述。
+- 第三段：微弱信號
+    - 相對於第二部份的重點新聞，某些事件或許沒有這麼重要，但可能是未來趨勢的預兆。這一段請你幫我針對各個主題（社會、科技、經濟、環境、政治、投資）找出兩個這類帶有「微弱信號」的事件，用 100 字簡單摘要該篇新聞。
+    - 針對每則你找出的新聞，幫我撰寫你認為該事件隱含著什麼樣的發展可能性與信號。所謂的可能性與信號，可以幫我多加專注於「市場與投資機會」這類的未來發展上。用 150 字簡單闡述。
+- 第四段：結論
+    - 綜合上述內容，給出一個 300 字以內的結論。
 
 注意事項：
 1. 輸出格式請使用 HTML 格式輸出，務必不要回傳任何其他文字內容。只要回傳 html 即可！
@@ -328,11 +351,13 @@ prompt = """
 2. 若新聞 input 不夠多，則不用每個主題都寫。
 3. 若新聞真的極度缺乏（ex: 只有兩三篇新聞輸入），請回傳字串 None，「不要有其他回應」。
 4. 所有文字都要是黑色的字。
+5. 輸出內容盡量不要與前一日的電子報太相似。我會輸入前一日的電子報內容給你參考。
+6. 第二、第三段都請記得生成所有主題（社會、科技、經濟、環境、政治、投資）的內容，不要只輸出一到兩個主題的內容。「務必完整回傳」，不然我會生氣。兩個 section * 六個 topics = 12 個 articles 區塊。
 
 [OUTPUT]:
 
 '''
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset='utf-8'>
@@ -341,27 +366,63 @@ prompt = """
 <body>
     <h1>當日日期</h1>
     <section>
-        <h2>社會</h2>
-        <article>
-            <h3>社會相關的新聞一標題</h3>
-            <p>社會相關的新聞一內文</p>
-        </article>
-        <article>
-            <h3>社會相關的新聞二標題</h3>
-            <p>社會相關的新聞二內文</p>
-        </article>
+        <h2>代表漢字：<span style="font-weight: bold; color: 你認為符合該漢字意象的顏色;">『漢字』</span></h2>
+            <h3>代表漢字釋義</h3>
+        <h2>重點新聞</h2>
+            <h3>社會</h3>
+                <article>
+                    <h4>社會相關的新聞一標題</h4>
+                    <p>社會相關的新聞一內文</p>
+                    <p>社會相關的新聞一之重要原因</p>
+                </article>
+                <article>
+                    <h4>社會相關的新聞二標題</h4>
+                    <p>社會相關的新聞二內文</p>
+                    <p>社會相關的新聞二之重要原因</p>
+                </article>
+            <h3>科技</h3>
+                <article>
+                    <h4>科技相關的新聞一標題</h4>
+                    <p>科技相關的新聞一內文</p>
+                    <p>科技相關的新聞一之重要原因</p>
+                </article>
+                <article>
+                    <h4>科技相關的新聞二標題</h4>
+                    <p>科技相關的新聞二內文</p>
+                    <p>科技相關的新聞二之重要原因</p>
+                </article>
+            ..
+        <h2>微弱信號</h2>
+            <h3>社會</h3>
+                <article>
+                    <h4>社會相關的微弱信號一</h4>
+                    <p>該新聞的摘要</p>
+                    <p>微弱信號：該新聞背後的微弱信號</p>
+                </article>
+                <article>
+                    <h4>社會相關的微弱信號二</h4>
+                    <p>該新聞的摘要</p>
+                    <p>微弱信號：該新聞背後的微弱信號</p>
+                </article>
+            <h3>科技</h3>
+                <article>
+                    <h4>科技相關的微弱信號一</h4>
+                    <p>該新聞的摘要</p>
+                    <p>微弱信號：該新聞背後的微弱信號</p>
+                </article>
+                <article>
+                    <h4>科技相關的微弱信號二</h4>
+                    <p>該新聞的摘要</p>
+                    <p>微弱信號：該新聞背後的微弱信號</p>
+                </article>
+            ..
+        <h2>重點總結</h2>
+            <article>
+                <p>300字以內的重點總結</p>
+            </article>
+        
     </section>
-    <section>
-        <h2>科技</h2>
-        <article>
-            <h3>科技相關的新聞一標題</h3>
-            <p>科技相關的新聞一內文</p>
-        </article>
-        <article>
-            <h3>科技相關的新聞二標題</h3>
-            <p>科技相關的新聞二內文</p>
-        </article>
-    </section>
+    
     ...
 </body>
 </html>
@@ -369,4 +430,7 @@ prompt = """
 
 
 若輸入的新聞資料十分缺乏，則請回傳字串 None。
+
+前一日的電子報內容：
+{previous_day}
 """
