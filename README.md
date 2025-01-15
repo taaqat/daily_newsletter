@@ -7,8 +7,7 @@ In order to exploit the daily-scraped news and article data more efficiently, we
 ├── README.md
 ├── app.py
 ├── manager.py
-├── requirements.txt
-└── test.py
+└── requirements.txt
 ```
 
 ### `app.py`
