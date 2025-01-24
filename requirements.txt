@@ -3,6 +3,7 @@ streamlit
 urllib3
 pandas
 langchain-anthropic
+langchain-openai
 langchain-core
 langchain
 st-gsheets-connection

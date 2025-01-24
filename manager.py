@@ -11,6 +11,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 import time
 import os
@@ -256,9 +257,18 @@ class DataManager:
 class LlmManager:
 
     CLAUDE_KEY = os.getenv("CLAUDE")
-    model = ChatAnthropic(model = 'claude-3-5-sonnet-20241022',
+    OPENAI_KEY = os.getenv("OPENAI")
+    
+    
+    claude_model = ChatAnthropic(model = 'claude-3-5-sonnet-20241022',
                             api_key = CLAUDE_KEY,
                             max_tokens = 8000,
+                            temperature = 0.0,
+                            verbose = True
+                            )
+    gpt_model = ChatOpenAI(model = 'gpt-4o',
+                            api_key = OPENAI_KEY,
+                            max_tokens = 16000,
                             temperature = 0.0,
                             verbose = True
                             )
@@ -314,7 +324,7 @@ class LlmManager:
         return summary_json
         
     @staticmethod
-    def create_prompt_chain(sys_prompt):
+    def create_prompt_chain(sys_prompt, model):
 
         # *** Create the Prompt ***
         prompt_obj = ChatPromptTemplate.from_messages(
@@ -326,7 +336,7 @@ class LlmManager:
         )
 
         # *** Create LLM Chain ***
-        chain = prompt_obj | LlmManager.model
+        chain = prompt_obj | model
 
         return chain
     
