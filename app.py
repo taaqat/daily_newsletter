@@ -25,9 +25,14 @@ def main():
     # * summarize and generate newsletter by LLM
     in_message = DataManager.return_daily_raw_str(yesterday, raw_news)
     sys_prompt = prompt(DataManager.get_from_gsheet(previous_day).tolist()[0])
-    print(sys_prompt)
-    response = LlmManager.llm_api_call(LlmManager.create_prompt_chain(sys_prompt), in_message)
-    print(response)
+
+    # * test the api key balance (claude > gpt. we prefer claude)
+    try:
+        response = LlmManager.llm_api_call(LlmManager.create_prompt_chain(sys_prompt, LlmManager.claude_model), in_message)
+    except:
+        response = LlmManager.llm_api_call(LlmManager.create_prompt_chain(sys_prompt, LlmManager.gpt_model), in_message)
+        
+    
     pattern = r"<!DOCTYPE html>.*?</html>"
     match = re.search(pattern, response, re.DOTALL)
 
