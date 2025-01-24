@@ -35,7 +35,7 @@ def main():
     
     pattern = r"<!DOCTYPE html>.*?</html>"
     match = re.search(pattern, response, re.DOTALL)
-
+    print(response)
     if match:
         html_content = match.group(0)
         print("Daily newsletter generated")
