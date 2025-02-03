@@ -365,81 +365,113 @@ prompt = lambda previous_day = None: f"""
 2. 若新聞 input 不夠多，則不用每個主題都寫。
 3. 所有文字都要是黑色的字。
 4. 輸出內容盡量不要與前一日的電子報太相似。我會輸入前一日的電子報內容給你參考。
-5. 第二、第三段都請記得生成所有主題（社會、科技、經濟、環境、政治、投資）的內容，不要只輸出一到兩個主題的內容。「務必完整回傳」，不然我會生氣。兩個 section * 六個 topics = 12 個 articles 區塊。
+5. 第二、第三段都請記得生成所有主題（社會、科技、經濟、環境、政治、投資）的內容，不要只輸出一到兩個主題的內容。「務必完整回傳」，不然我會生氣。兩個 section * 六個 topics = 12 個 div[class = 'articles'] 區塊。
 6. 「第二段：重點新聞」與「第三段：微弱信號」的內文多寡比重要為「6:4」。
+7. 除了內文和我有特別指示的區塊以外，HTML Body 的格式請嚴格遵守，不要多做修改。
 
 [OUTPUT]:
 
 '''
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset='utf-8'>
 <title>HTML mail</title>
+<style>
+    body {{
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 10px;
+        }}
+    .container {{
+        max-width: 1000px;
+        margin: auto;
+        background: #fff;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }}
+    h1, h2, h3, h4 {{
+        color: #333;
+        }}
+    .keyword {{
+        font-weight: bold;
+        color: {{給你判斷要用什麼顏色比較吸睛}};
+        }}
+    .section {{
+        margin-bottom: 20px;
+        padding: 15px;
+        border-left: 5px solid #007BFF;
+        background-color: #f9f9f9;
+        }}
+    .article {{
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        }}
+</style>
 </head>
-<body>
-    <h1>當日日期</h1>
-    <section>
-        <h2>代表關鍵詞：<span style="font-weight: bold; color: 你認為符合該漢字意象的顏色;">『關鍵詞』</span></h2>
-            <h3>代表關鍵詞釋義</h3>
-        <h2>重點新聞</h2>
-            <h3>社會</h3>
-                <article>
-                    <h4>社會相關的新聞一標題</h4>
-                    <p>社會相關的新聞一內文</p>
-                    <p>社會相關的新聞一之重要原因</p>
-                </article>
-                <article>
-                    <h4>社會相關的新聞二標題</h4>
-                    <p>社會相關的新聞二內文</p>
-                    <p>社會相關的新聞二之重要原因</p>
-                </article>
-            <h3>科技</h3>
-                <article>
-                    <h4>科技相關的新聞一標題</h4>
-                    <p>科技相關的新聞一內文</p>
-                    <p>科技相關的新聞一之重要原因</p>
-                </article>
-                <article>
-                    <h4>科技相關的新聞二標題</h4>
-                    <p>科技相關的新聞二內文</p>
-                    <p>科技相關的新聞二之重要原因</p>
-                </article>
-            ..
-        <h2>微弱信號</h2>
-            <h3>社會</h3>
-                <article>
-                    <h4>社會相關的微弱信號一</h4>
-                    <p>該新聞的摘要</p>
-                    <p>微弱信號：該新聞背後的微弱信號</p>
-                </article>
-                <article>
-                    <h4>社會相關的微弱信號二</h4>
-                    <p>該新聞的摘要</p>
-                    <p>微弱信號：該新聞背後的微弱信號</p>
-                </article>
-            <h3>科技</h3>
-                <article>
-                    <h4>科技相關的微弱信號一</h4>
-                    <p>該新聞的摘要</p>
-                    <p>微弱信號：該新聞背後的微弱信號</p>
-                </article>
-                <article>
-                    <h4>科技相關的微弱信號二</h4>
-                    <p>該新聞的摘要</p>
-                    <p>微弱信號：該新聞背後的微弱信號</p>
-                </article>
-            ..
-        <h2>重點總結</h2>
-            <article>
-                <p>300字以內的重點總結</p>
-            </article>
-        
-    </section>
-    
-    ...
-</body>
+    <body>
+        <div class="container">
+            <h1>Daily News Letter {{當日日期}}!</h1>
+            <div class="section">
+                <h2>代表關鍵詞：<span class="keyword">『{{代表關鍵詞}}』</span></h2>
+                    <h3>代表關鍵詞釋義</h3>
+                        <p>代表關鍵詞釋義內文</p>
+            </div>
+            <div class="section">
+                <h2>重點新聞</h2>
+                    <div class="article">
+                        <h3>社會</h3>
+                            <h4>社會相關新聞一</h4>
+                                <p>內文</p>
+                    </div>
+                    <div class="article">
+                        <h4>社會相關新聞二</h4>
+                            <p>內文</p>
+                    </div>
+                    <div class="article">
+                        <h3>科技</h3>
+                            <h4>科技相關新聞一</h4>
+                                <p>內文</p>
+                    </div>
+                    <div class="article">
+                        <h4>科技相關新聞二</h4>
+                            <p>內文</p>
+                    </div>
+                    ...
+            </div>
+            <div class="section">       
+                <h2>微弱信號</h2>
+                    <div class="article">
+                        <h3>社會</h3>
+                            <h4>社會相關的微弱信號一</h4>
+                                <p>內文</p>
+                    </div>
+                    <div class="article">
+                        <h4>社會相關的微弱信號二</h4>
+                            <p>內文</p>
+                    </div>
+                    <div class="article">
+                        <h3>科技</h3>
+                            <h4>科技相關的微弱信號一</h4>
+                                <p>內文</p>
+                    </div>
+                    <div class="article">
+                        <h4>科技相關的微弱信號二</h4>
+                            <p>內文</p>
+                    </div>
+                    ...
+            </div>
+            <div class="section">       
+                <h2>重點總結</h2>
+                    <p>重點總結內文</p>
+            </div>
+        </div>
+    </body>
 </html>
+
 '''
 
 前一日的電子報內容：
