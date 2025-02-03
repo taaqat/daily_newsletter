@@ -368,6 +368,7 @@ prompt = lambda previous_day = None: f"""
 5. 第二、第三段都請記得生成所有主題（社會、科技、經濟、環境、政治、投資）的內容，不要只輸出一到兩個主題的內容。「務必完整回傳」，不然我會生氣。兩個 section * 六個 topics = 12 個 div[class = 'articles'] 區塊。
 6. 「第二段：重點新聞」與「第三段：微弱信號」的內文多寡比重要為「6:4」。
 7. 除了內文和我有特別指示的區塊以外，HTML Body 的格式請嚴格遵守，不要多做修改。
+8. 幫我將 HTML Body 中 CSS Selector 的外框 \( \) 改回 JSON 的大括號格式，CSS 才有辦法生效
 
 [OUTPUT]:
 
@@ -379,44 +380,44 @@ prompt = lambda previous_day = None: f"""
 <meta charset='utf-8'>
 <title>HTML mail</title>
 <style>
-    body {{
+    body \(
         font-family: Arial, sans-serif;
         background-color: #f4f4f4;
         margin: 0;
         padding: 10px;
-        }}
-    .container {{
+        \)
+    .container \(
         max-width: 1000px;
         margin: auto;
         background: #fff;
         padding: 10px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }}
-    h1, h2, h3, h4 {{
+        \)
+    h1, h2, h3, h4 \(
         color: #333;
-        }}
-    .keyword {{
+        \)
+    .keyword \(
         font-weight: bold;
-        color: {{給你判斷要用什麼顏色比較吸睛}};
-        }}
-    .section {{
+        color: \(給你判斷要用什麼顏色比較吸睛\);
+        \)
+    .section \(
         margin-bottom: 20px;
         padding: 15px;
         border-left: 5px solid #007BFF;
         background-color: #f9f9f9;
-        }}
-    .article {{
+        \)
+    .article \(
         padding: 10px;
         border-bottom: 1px solid #ddd;
-        }}
+        \)
 </style>
 </head>
     <body>
         <div class="container">
-            <h1>Daily News Letter {{當日日期}}!</h1>
+            <h1>Daily News Letter \(當日日期\)!</h1>
             <div class="section">
-                <h2>代表關鍵詞：<span class="keyword">『{{代表關鍵詞}}』</span></h2>
+                <h2>代表關鍵詞：<span class="keyword">『\(代表關鍵詞\)』</span></h2>
                     <h3>代表關鍵詞釋義</h3>
                         <p>代表關鍵詞釋義內文</p>
             </div>
