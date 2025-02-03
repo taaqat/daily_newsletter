@@ -24,7 +24,12 @@ def main():
     
     # * summarize and generate newsletter by LLM
     in_message = DataManager.return_daily_raw_str(yesterday, raw_news)
-    sys_prompt = prompt(DataManager.get_from_gsheet(previous_day).tolist()[0])
+    try:
+        prev_cont = DataManager.get_from_gsheet(previous_day).tolist()[0]
+    except:
+        prev_cont = "None"
+        
+    sys_prompt = prompt(prev_cont)
 
     # * test the api key balance (claude > gpt. we prefer claude)
     try:

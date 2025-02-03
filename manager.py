@@ -28,7 +28,7 @@ class DataManager:
             ):
 
         url = 'http://61.64.60.30/news-crawler/api/news_summary/?'
-
+        
         headers = {
             'Authorization': os.getenv("III_KEY")
         }
@@ -203,6 +203,8 @@ class DataManager:
         date):
         
         url = 'http://61.64.60.30/news-crawler/api/file/?'
+
+        
         
         headers = {
             'Authorization': os.getenv("III-KEY")
@@ -340,7 +342,7 @@ class LlmManager:
 
         return chain
     
-prompt = lambda previous_day: f"""
+prompt = lambda previous_day = None: f"""
 你是一個優秀的電子報的撰文者，整理每日的新聞並統整成電子報的形式。
 我會輸入一批當日的新聞資料，請你幫我用這批新聞統整出一份電子報，內容如下：
 - 第一段：今日代表關鍵詞和釋義
