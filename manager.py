@@ -109,6 +109,7 @@ class DataManager:
         else:
             date = day
 
+        data['published_at'] = pd.to_datetime(data['published_at'])
 
 
         for index, row in data.iterrows():
@@ -288,11 +289,12 @@ class LlmManager:
             memory = ""
             
             response = chain.invoke({"input": in_message, "memory": memory})
+            print(response)
             while response.usage_metadata["output_tokens"] >= 5000:
                 memory += response.content
                 response = chain.invoke({"input": in_message, "memory": memory})
             memory += str(response.content)
-            # st.write(memory)
+            
             return memory
         
         summary_json = run_with_memory(chain, in_message)
@@ -361,11 +363,10 @@ prompt = lambda previous_day = None: f"""
 1. 輸出格式請使用 HTML 格式輸出，務必不要回傳任何其他文字內容。只要回傳 html 即可！
    前面也不需要回傳 'here's the HTML format newsletter ....' 這段，只要 html 就好！
 2. 若新聞 input 不夠多，則不用每個主題都寫。
-3. 若新聞真的極度缺乏（ex: 只有兩三篇新聞輸入），請回傳字串 None，「不要有其他回應」。
-4. 所有文字都要是黑色的字。
-5. 輸出內容盡量不要與前一日的電子報太相似。我會輸入前一日的電子報內容給你參考。
-6. 第二、第三段都請記得生成所有主題（社會、科技、經濟、環境、政治、投資）的內容，不要只輸出一到兩個主題的內容。「務必完整回傳」，不然我會生氣。兩個 section * 六個 topics = 12 個 articles 區塊。
-7. 「第二段：重點新聞」與「第三段：微弱信號」的內文多寡比重要為「6:4」。
+3. 所有文字都要是黑色的字。
+4. 輸出內容盡量不要與前一日的電子報太相似。我會輸入前一日的電子報內容給你參考。
+5. 第二、第三段都請記得生成所有主題（社會、科技、經濟、環境、政治、投資）的內容，不要只輸出一到兩個主題的內容。「務必完整回傳」，不然我會生氣。兩個 section * 六個 topics = 12 個 articles 區塊。
+6. 「第二段：重點新聞」與「第三段：微弱信號」的內文多寡比重要為「6:4」。
 
 [OUTPUT]:
 
@@ -440,9 +441,6 @@ prompt = lambda previous_day = None: f"""
 </body>
 </html>
 '''
-
-
-若輸入的新聞資料十分缺乏，則請回傳字串 None。
 
 前一日的電子報內容：
 {previous_day}
