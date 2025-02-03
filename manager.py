@@ -369,6 +369,7 @@ prompt = lambda previous_day = None: f"""
 6. 「第二段：重點新聞」與「第三段：微弱信號」的內文多寡比重要為「6:4」。
 7. 除了內文和我有特別指示的區塊以外，HTML Body 的格式請嚴格遵守，不要多做修改。
 8. 幫我將 HTML Body 中 CSS Selector 的外框 \( \) 改回 JSON 的大括號格式，CSS 才有辦法生效
+9. 內文中的一些關鍵字，或是你認為重要的地方，請幫我用 <strong> 標籤加粗！
 
 [OUTPUT]:
 
