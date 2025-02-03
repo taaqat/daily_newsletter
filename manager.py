@@ -296,7 +296,7 @@ class LlmManager:
             return memory
         
         summary_json = run_with_memory(chain, in_message)
-        # st.write(summary_json)
+        print(summary_json)
 
         fail_count = 0
         while (summary_json in ["null", "DecodeError", None]):
