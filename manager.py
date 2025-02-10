@@ -477,5 +477,5 @@ prompt = lambda previous_day = None: f"""
 '''
 
 前一日的電子報內容：
-{previous_day}
+{previous_day.replace('{', '(').replace('}', ')')}
 """
