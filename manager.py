@@ -263,7 +263,7 @@ class LlmManager:
     OPENAI_KEY = os.getenv("OPENAI")
     
     
-    claude_model = ChatAnthropic(model = 'claude-3-5-sonnet-20241022',
+    claude_model = ChatAnthropic(model = 'claude-3-7-sonnet-20250219',
                             api_key = CLAUDE_KEY,
                             max_tokens = 8000,
                             temperature = 0.0,
