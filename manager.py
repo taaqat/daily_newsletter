@@ -373,10 +373,13 @@ prompt = lambda previous_day = None: f"""
 9. 幫我將 HTML Body 中 CSS Selector 的外框 \( \) 改回 JSON 的大括號格式，CSS 才有辦法生效
 10. 內文中的一些關鍵字，或是你認為重要的地方，請幫我用 <strong> 標籤加粗！
 
+特別注意：
+1. [重要]我知道你很會歸納分析，但有點話太多了！請你嚴格依照我的字數限制，最多最多不要超過 200 字！！不然讀者根本看不完
+2. HTML 裏面的「顏色」都可以自由發揮，請發揮你的美感，我相信你可以！！
+
 [OUTPUT]:
 
 '''
-
 <!DOCTYPE html>
 <html>
 <head>
